@@ -9,13 +9,15 @@ function App() {
   );
 }
 function Display() {
-  const [lastPlayed, setLastPlayed] = React.useState('');
+  const [lastPlayed, setLastPlayed] = React.useState(
+    '- - - - - - - - - - - - - -'
+  );
 
   function handleSound(id) {
     const sound = document.getElementById(id);
     sound.play();
     audio.forEach((item) => {
-      if (item.keyCode === id) {
+      if (item.keyTrigger === id) {
         setLastPlayed(item.id);
       }
     });
@@ -23,14 +25,22 @@ function Display() {
   function handleKeyPress(e) {
     audio.forEach((item) => {
       if (item.keyCode === e.keyCode || item.keyCode === e.keyCode - 32) {
-        handleSound(item.keyCode);
+        handleSound(item.keyTrigger);
         setLastPlayed(item.id);
       }
     });
   }
-
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLastPlayed('- - - - - - - - - - - - - -');
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [lastPlayed]);
   return (
     <div id='display'>
+      <h2>{lastPlayed}</h2>
       {document.addEventListener('keypress', handleKeyPress)}
       {audio.map((item) => {
         const { id, keyTrigger, url, keyCode } = item;
@@ -39,19 +49,18 @@ function Display() {
             key={keyCode}
             className='drum-pad'
             id={id}
-            onClick={() => handleSound(keyCode)}
+            onClick={() => handleSound(keyTrigger)}
           >
             <audio
               className='clip'
               src={url}
               type='audio/mpeg'
-              id={keyCode}
+              id={keyTrigger}
             ></audio>
             {keyTrigger}
           </button>
         );
       })}
-      <h2>{lastPlayed}</h2>
     </div>
   );
 }
