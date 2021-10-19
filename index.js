@@ -3,6 +3,7 @@ function App() {
   return (
     <main>
       <section id='drum-machine'>
+        <h1>Drum Machine</h1>
         <Display />
       </section>
     </main>
@@ -12,7 +13,6 @@ function Display() {
   const [lastPlayed, setLastPlayed] = React.useState(
     '- - - - - - - - - - - - - -'
   );
-
   function handleSound(id) {
     const sound = document.getElementById(id);
     sound.play();
@@ -41,26 +41,28 @@ function Display() {
   return (
     <div id='display'>
       <h2>{lastPlayed}</h2>
-      {document.addEventListener('keypress', handleKeyPress)}
-      {audio.map((item) => {
-        const { id, keyTrigger, url, keyCode } = item;
-        return (
-          <button
-            key={keyCode}
-            className='drum-pad'
-            id={id}
-            onClick={() => handleSound(keyTrigger)}
-          >
-            <audio
-              className='clip'
-              src={url}
-              type='audio/mpeg'
-              id={keyTrigger}
-            ></audio>
-            {keyTrigger}
-          </button>
-        );
-      })}
+      {document.addEventListener('keydown', handleKeyPress)}
+      <div className='btn-container'>
+        {audio.map((item) => {
+          const { id, keyTrigger, url, keyCode } = item;
+          return (
+            <button
+              key={keyCode}
+              className='drum-pad'
+              id={id}
+              onClick={() => handleSound(keyTrigger)}
+            >
+              <audio
+                className='clip'
+                src={url}
+                type='audio/mpeg'
+                id={keyTrigger}
+              ></audio>
+              {keyTrigger}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
